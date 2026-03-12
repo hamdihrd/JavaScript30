@@ -1,13 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JS + CSS Clock</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-
-
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS + CSS Clock</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
     <div class="clock">
       <div class="clock-face">
         <div class="hand hour-hand"></div>
@@ -16,60 +14,158 @@
       </div>
     </div>
 
+    <style>
+      html {
+        background: #018ded url(https://unsplash.it/1500/1000?image=881&blur=5);
+        background-size: cover;
+        font-family: "helvetica neue";
+        text-align: center;
+        font-size: 10px;
+      }
 
-  <style>
-    html {
-      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
-      background-size: cover;
-      font-family: 'helvetica neue';
-      text-align: center;
-      font-size: 10px;
-    }
+      body {
+        margin: 0;
+        font-size: 2rem;
+        display: flex;
+        flex: 1;
+        min-height: 100vh;
+        align-items: center;
+      }
 
-    body {
-      margin: 0;
-      font-size: 2rem;
-      display: flex;
-      flex: 1;
-      min-height: 100vh;
-      align-items: center;
-    }
+      .clock {
+        width: 30rem;
+        height: 30rem;
+        border: 30px solid white;
+        border-radius: 50%;
+        margin: 50px auto;
+        position: relative;
+        padding: 2rem;
+        box-shadow:
+          0 0 0 4px rgba(0, 0, 0, 0.1),
+          inset 0 0 0 3px #efefef,
+          inset 0 0 10px black,
+          0 0 10px rgba(0, 0, 0, 0.2);
+      }
 
-    .clock {
-      width: 30rem;
-      height: 30rem;
-      border: 20px solid white;
-      border-radius: 50%;
-      margin: 50px auto;
-      position: relative;
-      padding: 2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
-    }
+      .clock-face {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform: translateY(
+          0px
+        ); /* account for the height of the clock hands */
+      }
 
-    .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
-    }
+      .hand {
+        width: 50%;
+        height: 6px;
+        background: black;
+        transform-origin: 100% 50%;
+        position: absolute;
+        top: 50%;
+      }
+      .hour-hand {
+        background-color: rgb(0, 0, 0);
+        width: 30%;
+        margin-left: 20%;
+      }
+      .min-hand {
+        background-color: #355163c4;
+        width: 40%;
+        margin-left: 10%;
+      }
+      .second-hand {
+        background-color: rgba(53, 32, 73, 0.637);
+        transition: transform 0.05s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+      }
+      .number {
+        position: absolute;
+        font-size: 2rem;
+        font-weight: 400;
+        top: 50%;
+        left: 50%;
+      }
+      .line {
+        position: absolute;
+        width: 2px;
+        height: 10px;
+        background: black;
+        top: 0;
+        left: 50%;
+        top: 50%;
+      }
+      .hour {
+        width: 4px;
+        height: 18px;
+      }
+    </style>
 
-    .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
-      position: absolute;
-      top: 50%;
-    }
+    <script>
+      function setNumber() {
+        const clock = document.querySelector(".clock");
+        const clockWidth = clock.offsetWidth;
+        const radius = clockWidth * 0.46; // 45% du diamètre pour laisser de la marge
 
-  </style>
+        for (let i = 1; i <= 12; i++) {
+          const number = document.createElement("div");
+          number.classList.add("number");
+          number.textContent = i;
 
-  <script>
+          // D'abord ajouter au DOM pour pouvoir mesurer
+          clock.appendChild(number);
 
+          // Calcul de l'angle en radians (12 en haut)
+          const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
 
-  </script>
-</body>
+          // Calcul des positions x et y pour centrer le nombre
+          const x = Math.cos(angle) * radius - number.offsetWidth / 2;
+          const y = Math.sin(angle) * radius - number.offsetHeight / 2;
+
+          // Positionnement
+          number.style.transform = `translate(${x}px, ${y}px)`;
+        }
+      }
+      setNumber();
+      function setMinuteLine() {
+        const clock = document.querySelector(".clock-face");
+        for (let i = 0; i < 60; i++) {
+          const line = document.createElement("div");
+
+          line.classList.add("line");
+          line.style.transformOrigin = "0 0";
+          if (i % 5 === 0) {
+            line.classList.add("hour");
+          }
+
+          line.style.transform = `rotate(${i * 6}deg) translate(0, -150px)`;
+
+          clock.appendChild(line);
+        }
+      }
+      setMinuteLine();
+
+      const secondHand = document.querySelector(".second-hand");
+      const minsHand = document.querySelector(".min-hand");
+      const hourHand = document.querySelector(".hour-hand");
+
+      function setTime() {
+        const now = new Date();
+
+        const seconds = now.getSeconds();
+        const secondsDegrees = (seconds / 60) * 360 + 90;
+        secondHand.style.transform = `  rotate(${secondsDegrees}deg)`;
+
+        const mins = now.getMinutes();
+        const minsDegrees = (mins / 60) * 360 + 90;
+        minsHand.style.transform = `rotate(${minsDegrees}deg)`;
+
+        const hour = now.getHours();
+        const hourDegrees = (((hour % 12) + mins / 60) / 12) * 360 + 90;
+        hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+      }
+
+      setInterval(setTime, 1000);
+      setTime();
+    </script>
+  </body>
 </html>
