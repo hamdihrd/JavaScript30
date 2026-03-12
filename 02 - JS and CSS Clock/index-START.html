@@ -54,6 +54,19 @@
         transform: translateY(
           0px
         ); /* account for the height of the clock hands */
+        z-index: 1;
+      }
+      .clock-face::before {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background-color: black;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3;
       }
 
       .hand {
@@ -63,20 +76,48 @@
         transform-origin: 100% 50%;
         position: absolute;
         top: 50%;
+        border-radius: 3px;
+        z-index: 2;
+      }
+      .hand::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 6px;
+        top: 0;
+        left: 100%;
+        background-color: inherit;
+        transform-origin: right center;
+        /* transform: translate(-50%, -50%); */
       }
       .hour-hand {
-        background-color: rgb(0, 0, 0);
+        background-color: #2d3748;
         width: 30%;
         margin-left: 20%;
       }
+      .hour-hand::after {
+        background-color: #2d3748;
+      }
       .min-hand {
-        background-color: #355163c4;
+        background-color: #4a5568;
         width: 40%;
         margin-left: 10%;
+        height: 4px;
+      }
+      .min-hand::after {
+        height: 4px;
+        background-color: #4a5568;
       }
       .second-hand {
-        background-color: rgba(53, 32, 73, 0.637);
+        background-color: rgba(221, 91, 4, 0.637);
+        box-shadow: 0 0 5px rgba(221, 91, 4, 0.3);
         transition: transform 0.05s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+        height: 3px;
+      }
+      .second-hand::after {
+        height: 3px;
+        background-color: rgba(221, 91, 4, 0.637);
+        box-shadow: 0 0 5px rgba(221, 91, 4, 0.3);
       }
       .number {
         position: absolute;
@@ -90,7 +131,6 @@
         width: 2px;
         height: 10px;
         background: black;
-        top: 0;
         left: 50%;
         top: 50%;
       }
